@@ -15,6 +15,7 @@ the two tools disagree about what "flash" means:
 """
 
 import os
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -57,6 +58,10 @@ class TestAccounting:
 
 
 class TestMeasure:
+    @pytest.mark.skipif(
+        shutil.which("gcc") is None,
+        reason="needs gcc to compile the binary being measured",
+    )
     def test_measures_a_real_binary(self, tmp_path):
         src = tmp_path / "m.c"
         src.write_text("static char buf[4096];\nint main(void){return buf[0];}\n")
